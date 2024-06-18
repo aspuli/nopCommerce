@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using DocumentFormat.OpenXml.EMMA;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core;
 using Nop.Core.Domain.Catalog;
@@ -531,6 +532,12 @@ public partial class CustomerModelFactory : ICustomerModelFactory
         //prepare available customer roles
         await _aclSupportedModelFactory.PrepareModelCustomerRolesAsync(searchModel);
 
+        searchModel.AvailableActiveValues = new List<SelectListItem> {
+            new(await _localizationService.GetResourceAsync("Common.All"), string.Empty),
+            new(await _localizationService.GetResourceAsync("Common.Yes"), true.ToString(), true),
+            new(await _localizationService.GetResourceAsync("Common.No"), false.ToString())
+        };
+
         //prepare page parameters
         searchModel.SetGridPageSize();
 
@@ -594,6 +601,7 @@ public partial class CustomerModelFactory : ICustomerModelFactory
             phone: searchModel.SearchPhone,
             zipPostalCode: searchModel.SearchZipPostalCode,
             ipAddress: searchModel.SearchIpAddress,
+            isActive: searchModel.SearchIsActive,
             pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize);
 
         //prepare list model
